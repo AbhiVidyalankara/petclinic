@@ -1,0 +1,321 @@
+CREATE DATABASE PetCare;
+
+CREATE TABLE Veterinarian (
+    VID VARCHAR(20) PRIMARY KEY CHECK (VID LIKE 'V%'),
+    FName VARCHAR(50) NOT NULL,
+    LName VARCHAR(50) NOT NULL,
+    Phone VARCHAR(15) NOT NULL,
+    Qualification VARCHAR(100)
+);
+
+CREATE TABLE PetOwner (
+    OID VARCHAR(20) PRIMARY KEY CHECK (OID LIKE 'O%'),
+    FName VARCHAR(50) NOT NULL,
+    LName VARCHAR(50) NOT NULL,
+    Address VARCHAR(100) NOT NULL,
+    Phone VARCHAR(20) NOT NULL,
+    Email VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Pet (
+    PetID VARCHAR(20) PRIMARY KEY CHECK (PetID LIKE 'P%'),
+    PName VARCHAR(50) NOT NULL,
+    Breed VARCHAR(50) NOT NULL,
+    Gender VARCHAR(10) NOT NULL,
+    Age INT NOT NULL,
+    DOB DATE NOT NULL,
+    OID VARCHAR(20) NOT NULL,
+    FOREIGN KEY (OID) REFERENCES PetOwner(OID)
+);
+
+CREATE TABLE Surgery (
+    SurgeryID VARCHAR(20) PRIMARY KEY CHECK (SurgeryID LIKE 'S%'),
+    SDate DATE NOT NULL,
+    STime TIME
+);
+
+CREATE TABLE Prescription (
+    PID VARCHAR(20) PRIMARY KEY CHECK (PID LIKE 'Pi%'),
+    Medication VARCHAR(100) NOT NULL,
+    Dosage VARCHAR(50) NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL
+);
+
+create table Appointment( 
+    AppointID varchar(20) primary key check(AppointID like 'A%'), 
+    AppointDate date not null, 
+    AppointTime time not null,  
+    PetID varchar(20) foreign key references Pet(PetID) not null, 
+    VID varchar(20) foreign key references Veterinarian(VID) not null, 
+    OID varchar(20) foreign key references PetOwner(OID) not null,
+	SurgeryID varchar(20) FOREIGN KEY (SurgeryID) REFERENCES Surgery(SurgeryID),
+    PID varchar(20) FOREIGN KEY (PID) REFERENCES Prescription(PID)
+);
+
+
+CREATE TABLE Receptionist (
+    RID VARCHAR(20) PRIMARY KEY CHECK (RID LIKE 'R%'),
+    RName VARCHAR(50) NOT NULL,
+    Contact VARCHAR(15) NOT NULL,
+    Address VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE ClinicBook (
+    BID VARCHAR(20) PRIMARY KEY CHECK (BID LIKE 'B%'),
+    MedHistory TEXT NOT NULL,
+    RID VARCHAR(20) NOT NULL,
+    PetID VARCHAR(20) NOT NULL,
+    FOREIGN KEY (RID) REFERENCES Receptionist(RID),
+    FOREIGN KEY (PetID) REFERENCES Pet(PetID)
+);
+
+CREATE TABLE Invoice (
+    InvoiceID VARCHAR(20) PRIMARY KEY CHECK (InvoiceID LIKE 'I%'),
+    Amount DECIMAL(10, 2) NOT NULL,
+    Balance DECIMAL(10, 2) NOT NULL,
+    InvoiceDate DATE NOT NULL,
+    AppointID VARCHAR(20) NOT NULL,
+    FOREIGN KEY (AppointID) REFERENCES Appointment(AppointID)
+);
+
+CREATE TABLE Products (
+    ProID VARCHAR(20) PRIMARY KEY CHECK (ProID LIKE 'Pr%'),
+    ProName VARCHAR(50),
+    Price DECIMAL(10, 2),
+    Quantity INT
+);
+
+CREATE TABLE PetOwner_Product (
+    OID VARCHAR(20),
+    ProID VARCHAR(20),
+    PRIMARY KEY (OID, ProID),
+    FOREIGN KEY (OID) REFERENCES PetOwner(OID),
+    FOREIGN KEY (ProID) REFERENCES Products(ProID)
+);
+
+INSERT INTO Veterinarian (VID, FName, LName, Phone, Qualification) VALUES
+('V001', 'Kannaggara', 'Gamage', '1234567890', 'DVM'),
+('V002', 'Gayan', 'Vidyalankara', '0987654321', 'DVM'),
+('V003', 'Sarath', 'Bandula', '1234567890', 'DVM'),
+('V004', 'Sandya', 'Wijekoon', '0987654321', 'DVM'),
+('V005', 'Shriyani', 'Ranathunga', '0985673211', 'DVM');
+
+INSERT INTO PetOwner (OID, FName, LName, Phone, Email, Address ) VALUES
+('O001', 'Hasanka', 'Wijesingha', '07745632143', 'hasa@email.com', 'Galle'),
+('O002', 'Chamathka', 'Jayodawi', '0743562311', 'chama@email.com', 'Imaduwa'),
+('O003', 'Himeshi', 'Kankanamgamage', '8934512654', 'himeshi@email.com', 'Mathara'),
+('O004', 'Praween', 'Thilakasiri', '6665553421', 'praween@email.com', 'Galle '),
+('O005', 'Amaya', 'Wijethunga', '3452198745', 'amaya.email.com', 'Waligama'),
+('O006', 'Sadaruwan', 'Gamage', ' 5673492166 ', 'sadruwn@email.com', 'Imaduwa'),
+('O007', 'Abhisheka', 'Vidyalankara', '098674536', 'abhi@email.com', 'Unawatuna'),
+('O008', 'Anoma', 'Wimalasiri', '075675382', 'anoma@email.com', 'Galle'),
+('O009', 'Deepa', 'Chandani', '0786765342', 'deepa@email.com', 'Kodagoda'),
+('O010', 'Vidusha', 'Rajapaksha', '0987654723', 'vidusha@email.com', 'Ampegama'),
+('O011', 'Thilini', 'Samarawicrama', '0987876875', 'thilini@email.com', 'Rathgama'),
+('O012', 'Asini', 'Sandeepa', '0723456783', 'asini@email.com', 'Hikkaduwa'),
+('O013', 'Shashini', 'Subasingha', '0998765643', 'shashi@email.com', 'Waligana'),
+('O014', 'Nimsara', 'Ranathunga', '0986745321', 'nimsara@email.com', 'Galle'),
+('O015', 'Ashini', 'Divisekara', '09873543523', 'ashi@email.com', 'Akurassa'),
+('O016', 'Thanushi', 'Jayawardana', '09533745243', 'thanushi@email.com', 'Mathara'),
+('O017', 'Hiruni', 'Wirasinghe', '0978246322', 'hiru@email.com', ' Galle'),
+('O018', 'Gihani', 'Sewmini', '0983546767', 'gihani@email.com', 'Kananke '),
+('O019', 'Saduni', 'Jayodya', '0754536283', 'saduni@email.com', 'Howpe'),
+('O020', 'Rashmi', 'Amodya', '07637474733', 'rashmi@email.com', ' Galle ');
+
+-- Insert data into Pet table
+INSERT INTO Pet (PetID, PName, Breed, Gender, Age, DOB, OID) VALUES
+('P001', 'Buddy', 'Golden Retriever', 'Male', 3, '2020-01-01', 'O001'),
+('P002', 'Bella', 'Labrador', 'Female', 2, '2021-05-15', 'O002'),
+('P003', 'Jippy', 'Rottweiler', 'Male', 1, '2022-01-01', 'O003'),
+('P004', 'Lily', 'Bulldog', 'Female', 1, '2023-05-15', 'O004'),
+('P005', 'Sheena', 'German Shepherd', 'Male', 5, '2022-01-03', 'O005'),
+('P006', 'Sheeba', 'Labrador', 'Female', 10, '2021-05-07', 'O006'),
+('P007', 'Snowi', 'Golden Retriever', 'Male', 3, '2020-01-09', 'O007'),
+('P008', 'Peg', 'German Shepherd', 'Female', 2, '2021-05-15', 'O008'),
+('P009', 'Pagi', 'Husky', 'Male', 3, '2024-01-01', 'O009'),
+('P010', 'Persy', 'Ragdoll', 'Female', 2, '2021-05-15', 'O010'),
+('P011', 'Pearl', 'Persian', 'Male', 3, '2021-04-01', 'O011'),
+('P012', 'Sasha', 'Ragdoll', 'Female', 2, '2021-05-18', 'O012'),
+('P013', 'Robby', 'Persian', 'Male', 3, '2020-01-05', 'O013'),
+('P014', 'Roba', 'Persian', 'Female', 2, '2021-05-09', 'O014'),
+('P015', 'Rex', 'French Lop', 'Male', 2, '2020-01-20', 'O015'),
+('P016', 'Bully', 'American Rabbit', 'Female', 2, '2021-04-15', 'O016'),
+('P017', 'Shagi', 'Golden Retriever', 'Male', 3, '2023-03-01', 'O017'),
+('P018', 'Scooby', 'Labrador', 'Female', 2, '2021-09-15', 'O018'),
+('P019', 'Dolly', 'Golden Retriever', 'Male', 3, '2020-07-01', 'O019'),
+('P020', 'Rock', 'Bulldog', 'Female', 2, '2021-06-15', 'O020'),
+('P021', 'Shely', 'Golden Retriever', 'Male', 4, '2020-10-01', 'O001'),
+('P022', 'Momo', 'Labrador', 'Female', 2, '2021-03-12', 'O002'),
+('P023', 'Rangao', 'Golden Retriever', 'Male', 1, '2020-01-30', 'O003'),
+('P024', 'Garfield', 'Orange Tabby Persian', 'Female', 1, '2023-05-15', 'O004');
+
+INSERT INTO Surgery (SurgeryID, SDate, STime) VALUES
+('S001', '2024-06-10', '09:00:00'),
+('S002', '2024-07-15', '10:00:00'),
+('S003', '2024-08-05', '11:00:00'),
+('S004', '2024-08-20', '14:00:00'),
+('S005', '2024-09-10', '15:00:00');
+
+INSERT INTO Prescription (PID, Medication, Dosage, Price) VALUES
+('Pi001', 'Antibiotic', '50mg', 12.50),
+('Pi002', 'Painkiller', '25mg', 8.75),
+('Pi003', 'Vaccine', '1 dose', 20.00),
+('Pi004', 'Anti-inflammatory', '100mg', 15.00),
+('Pi005', 'Antiseptic', '10ml', 5.00);
+
+-- Insert data into Appointment table
+INSERT INTO Appointment (AppointID, AppointDate, AppointTime, PetID, VID, OID, SurgeryID, PID) VALUES
+('A001', '2024-06-05', '10:00:00', 'P001', 'V001', 'O001', 'S001', 'Pi001'),
+('A002', '2024-06-10', '11:00:00', 'P002', 'V002', 'O002', 'S002', 'Pi002'),
+('A003', '2024-06-20', '01:00:00', 'P003', 'V003', 'O003', 'S003', 'Pi003'),
+('A004', '2024-06-21', '04:00:00', 'P004', 'V004', 'O004', 'S004', 'Pi004'),
+('A005', '2024-06-25', '06:00:00', 'P005', 'V005', 'O005', 'S005', 'Pi005'),
+('A006', '2024-07-05', '09:00:00', 'P006', 'V001', 'O006', 'S001', 'Pi001'),
+('A007', '2024-07-09', '11:00:00', 'P007', 'V002', 'O007', 'S002', 'Pi002'),
+('A008', '2024-07-10', '02:00:00', 'P008', 'V003', 'O008', 'S003', 'Pi003'),
+('A009', '2024-07-15', '03:00:00', 'P009', 'V004', 'O009', 'S004', 'Pi004'),
+('A010', '2024-07-16', '05:00:00', 'P010', 'V005', 'O010', 'S005', 'Pi005'),
+('A011', '2024-07-17', '07:00:00', 'P011', 'V001', 'O011', 'S001', 'Pi001'),
+('A012', '2024-07-18', '08:00:00', 'P012', 'V002', 'O012', 'S002', 'Pi002'),
+('A013', '2024-07-19', '12:00:00', 'P013', 'V003', 'O013', 'S003', 'Pi003'),
+('A014', '2024-07-20', '09:00:00', 'P014', 'V004', 'O014', 'S004', 'Pi004'),
+('A015', '2024-07-21', '08:00:00', 'P015', 'V005', 'O015', 'S005', 'Pi005'),
+('A016', '2024-07-25', '12:00:00', 'P016', 'V001', 'O016', 'S001', 'Pi001'),
+('A017', '2024-08-10', '08:00:00', 'P017', 'V002', 'O017', 'S002', 'Pi002'),
+('A018', '2024-08-12', '09:00:00', 'P018', 'V003', 'O018', 'S003', 'Pi003'),
+('A019', '2024-08-15', '12:00:00', 'P019', 'V004', 'O019', 'S004', 'Pi004'),
+('A020', '2024-08-20', '10:00:00', 'P020', 'V005', 'O020', 'S005', 'Pi005');
+
+INSERT INTO Receptionist (RID, RName, Contact, Email, Address) VALUES
+('R001', 'Amal', '0987253623', 'amal@email.com','Galle'),
+('R002', 'Himali', '0985643789', 'himali@email.com','Mathara'),
+('R003', 'Chandani', '0983452555', 'chandani@email.com','Imaduwa'),
+('R004', 'Anusha', '0988765234', 'anusha@email.com','Akurassa'),
+('R005', 'Vindya', '0989976123', 'vindya@email.com','Hambanthota'),
+('R006', 'Rani', '0988934123', 'rani@email.com','Baddegama'),
+('R007', 'Shehani', '0987745900', 'shehani@email.com','Hikkaduwa'),
+('R008', 'Ashen', '0983423567', 'ashen@email.com','Ambalangoda'),
+('R009', 'Saman', '0988976300', 'saman@email.com','Aluthgama'),
+('R010', 'Tharidu', '0983421444', 'tharidu@email.com','Galle');
+
+INSERT INTO ClinicBook (BID, MedHistory, RID, PetID) VALUES
+('B001', 'History1', 'R001', 'P001'),
+('B002', 'History2', 'R002', 'P002'),
+('B003', 'History3', 'R003', 'P003'),
+('B004', 'History4', 'R004', 'P004'),
+('B005', 'History5', 'R005', 'P005');
+
+INSERT INTO Products (ProID, ProName, Price, Quantity) VALUES
+('Pr001', 'Dog Food', 20.00, 50),
+('Pr002', 'Cat Food', 15.00, 40),
+('Pr003', 'Bird Seed', 5.00, 100),
+('Pr004', 'Fish Food', 8.00, 70),
+('Pr005', 'Rabbit Food', 12.00, 60);
+
+INSERT INTO Invoice (InvoiceID, Amount, Balance, InvoiceDate, AppointID) VALUES
+('I001', 100.00, 50.00, '2024-06-06', 'A001'),
+('I002', 200.00, 150.00, '2024-06-11', 'A002'),
+('I003', 150.00, 75.00, '2024-06-21', 'A003'),
+('I004', 250.00, 200.00, '2024-06-22', 'A004'),
+('I005', 300.00, 100.00, '2024-06-26', 'A005');
+
+SELECT * FROM Veterinarian;
+
+SELECT * FROM PetOwner;
+
+SELECT * FROM Pet;
+
+SELECT * FROM Appointment;
+
+SELECT * FROM Receptionist;
+
+SELECT * FROM ClinicBook;
+
+SELECT * FROM Invoice;
+
+SELECT * FROM Products;
+
+SELECT * FROM PetOwner_Product;
+
+
+select Pet.PetID,Pet.PName,PetOwner.OID,PetOwner.LName from           
+Pet inner join PetOwner on PetOwner.OID=Pet.OID 
+
+SELECT a.AppointID, a.AppointDate, a.AppointTime,p.PName AS PetName,v.FName AS VetFirstName
+FROM Appointment a
+INNER JOIN Pet p ON a.PetID = p.PetID
+INNER JOIN Veterinarian v ON a.VID = v.VID;
+
+select Appointment.AppointID,PetOwner.OID,PetOwner.LName as PetOwner_Name,Appointment.VID 
+from Appointment inner join PetOwner on Appointment.OID=PetOwner.OID 
+where Appointment.VID = 'V005'
+
+SELECT p.PetID,p.PName,a.AppointID,a.AppointDate,a.AppointTime
+FROM Pet p LEFT JOIN Appointment a ON p.PetID = a.PetID;
+
+
+SELECT v.FName, v.LName, COUNT(a.AppointID) AS TotalAppointments
+FROM Veterinarian v
+JOIN Appointment a ON v.VID = a.VID
+GROUP BY v.FName, v.LName;
+
+SELECT * FROM Pet
+ORDER BY Age DESC;
+
+SELECT o.OID, o.FName, o.LName, SUM(i.Amount) AS TotalSpent
+FROM PetOwner o
+JOIN Appointment a ON o.OID = a.OID
+JOIN Invoice i ON a.AppointID = i.AppointID
+GROUP BY o.OID, o.FName, o.LName
+HAVING SUM(i.Amount) > 150;
+
+SELECT 
+    po.OID,
+    po.FName AS OwnerFirstName,
+    po.LName AS OwnerLastName,
+    COUNT(p.PetID) AS NumberOfPets
+FROM 
+    PetOwner po
+LEFT JOIN 
+    Pet p ON po.OID = p.OID
+GROUP BY 
+    po.OID, po.FName, po.LName;
+
+
+SELECT po.OID,po.FName AS OwnerFirstName,po.LName AS OwnerLastName,SUM(i.Amount) AS TotalAmount
+FROM PetOwner po
+INNER JOIN Appointment a ON po.OID = a.OID
+INNER JOIN Invoice i ON a.AppointID = i.AppointID
+GROUP BY po.OID, po.FName, po.LName;
+
+SELECT 
+    *
+FROM 
+    Prescription
+WHERE 
+    Price = (
+        SELECT 
+            MAX(Price)
+        FROM 
+            Prescription
+    );
+
+SELECT 
+    Breed,
+    AVG(Age) AS AverageAge
+FROM 
+    Pet
+GROUP BY 
+    Breed;
+
+CREATE VIEW VR_Attendance AS 
+SELECT 
+    VID,
+    LName 
+FROM 
+    Veterinarian;
+
+SELECT * FROM VR_Attendance;
+
+
